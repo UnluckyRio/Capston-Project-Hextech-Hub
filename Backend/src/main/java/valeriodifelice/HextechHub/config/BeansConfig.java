@@ -1,8 +1,8 @@
 package valeriodifelice.HextechHub.config;
 
+import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -12,7 +12,9 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.List;
 
-/** Bean di utilità condivisi */
+/**
+ * Bean di utilità condivisi
+ */
 @Configuration
 @EnableCaching
 @EnableAsync
@@ -25,7 +27,6 @@ public class BeansConfig {
 
     /**
      * Configurazione CORS per consentire le richieste dal frontend Vite (localhost:5173).
-     * In produzione impostare gli origin consentiti tramite variabili d'ambiente.
      */
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {

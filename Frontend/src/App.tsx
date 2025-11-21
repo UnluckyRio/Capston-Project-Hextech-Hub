@@ -9,6 +9,7 @@ import ArticleDetail from "./components/ArticleDetail";
 import Login from "./components/Login";
 import SignUp from "./components/SignUp";
 import Profile from "./components/Profile";
+import TierList from "./components/TierList";
 import { Routes, Route } from "react-router-dom";
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/home" element={<Home />} />
+        <Route path="/TierList" element={<TierList />} />
         <Route path="/Champions" element={<Champions />} />
         <Route path="/Champions/:id" element={<ChampionDetail />} />
         <Route path="/Article" element={<Article />} />
