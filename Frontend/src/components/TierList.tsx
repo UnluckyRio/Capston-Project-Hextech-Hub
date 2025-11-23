@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 import Card from "react-bootstrap/Card";
 import Table from "react-bootstrap/Table";
 import "../styles/Home.scss";
@@ -19,6 +20,8 @@ export default function TierList() {
   const [rows, setRows] = useState<TierRow[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
+  const navigate = useNavigate();
+  const location = useLocation();
 
   const fmtPct = (v: number) => `${(v * (v > 1 ? 0.01 : 1)).toFixed(1)}%`;
   const fmtInt = (v: number) =>
@@ -54,9 +57,13 @@ export default function TierList() {
         setRows(list);
       } catch (err: unknown) {
         const e = err as {
-          response?: { data?: { error?: string } };
+          response?: { status?: number; data?: { error?: string } };
           message?: string;
         };
+        if (e?.response?.status === 401) {
+          navigate("/login", { replace: true, state: { from: location } });
+          return;
+        }
         const msg =
           e?.response?.data?.error || e?.message || "Errore di caricamento";
         setError(msg);
