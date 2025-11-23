@@ -11,8 +11,8 @@ public class ChampionDto {
     private Long id;
     private String name;
     private String role;
-    private String winRate;
-    private String pickRate;
-    private String banRate;
-    private String matches;
+    private Double winRate; // percentuale 0..100
+    private Double pickRate; // percentuale 0..100
+    private Double banRate; // percentuale 0..100
+    private Integer matches; // numero partite
 }

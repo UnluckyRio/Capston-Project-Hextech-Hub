@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate, useLocation, Link } from "react-router-dom";
 import Card from "react-bootstrap/Card";
 import Table from "react-bootstrap/Table";
 import "../styles/Home.scss";
@@ -10,10 +10,10 @@ import api from "../api/client";
 type TierRow = {
   name: string;
   role: string;
-  pickRate: string;
-  winRate: string;
-  banRate: string;
-  matches: string;
+  pickRate: number;
+  winRate: number;
+  banRate: number;
+  matches: number;
 };
 
 export default function TierList() {
@@ -22,12 +22,26 @@ export default function TierList() {
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
   const location = useLocation();
+  const [champIdByName, setChampIdByName] = useState<Record<string, string>>(
+    {}
+  );
+  const [query, setQuery] = useState<string>("");
+  const [sortKey, setSortKey] = useState<
+    "name" | "pickRate" | "winRate" | "banRate"
+  >("name");
+  const [sortDir, setSortDir] = useState<"asc" | "desc">("asc");
 
-  const fmtPct = (v: number) => `${(v * (v > 1 ? 0.01 : 1)).toFixed(1)}%`;
+  const fmtPct = (v: number) => {
+    const n = Number.isFinite(v) ? v : 0;
+    return `${n.toFixed(2)}%`;
+  };
+
   const fmtInt = (v: number) =>
-    new Intl.NumberFormat(undefined, { maximumFractionDigits: 0 }).format(v);
+    Number.isFinite(v)
+      ? new Intl.NumberFormat(undefined, { maximumFractionDigits: 0 }).format(v)
+      : "0";
 
-  const endpoint = useMemo(() => "/api/champions", []);
+  const endpoint = useMemo(() => "/api/meta/tier-list", []);
 
   useEffect(() => {
     const load = async () => {
@@ -40,17 +54,25 @@ export default function TierList() {
             typeof d === "object" && d !== null
               ? (d as Record<string, unknown>)
               : {};
-          const num = (v: unknown): number =>
-            typeof v === "number" ? v : Number(v ?? 0);
+          const num = (v: unknown): number => {
+            if (typeof v === "number") return v;
+            if (typeof v === "string") {
+              const s = v.trim().replace("%", "").replace(",", ".");
+              const n = Number(s);
+              return Number.isFinite(n) ? n : 0;
+            }
+            const n = Number(v ?? 0);
+            return Number.isFinite(n) ? n : 0;
+          };
           const str = (v: unknown): string =>
             typeof v === "string" ? v : String(v ?? "");
           return {
             name: str(o.name ?? o.championName),
             role: str(o.role ?? o.position),
-            pickRate: str(o.pickRate ?? o.pick_rate),
-            winRate: str(o.winRate ?? o.win_rate),
-            banRate: str(o.banRate ?? o.ban_rate),
-            matches: str(o.matches ?? o.games),
+            pickRate: num(o.pickRate ?? o.pick_rate),
+            winRate: num(o.winRate ?? o.win_rate),
+            banRate: num(o.banRate ?? o.ban_rate),
+            matches: num(o.matches ?? o.games),
           };
         };
         const list: TierRow[] = Array.isArray(data) ? data.map(toRow) : [];
@@ -64,8 +86,7 @@ export default function TierList() {
           navigate("/login", { replace: true, state: { from: location } });
           return;
         }
-        const msg =
-          e?.response?.data?.error || e?.message || "Errore di caricamento";
+        const msg = e?.response?.data?.error || e?.message || "Loading error";
         setError(msg);
       } finally {
         setLoading(false);
@@ -74,17 +95,107 @@ export default function TierList() {
     load();
   }, [endpoint]);
 
+  useEffect(() => {
+    const CHAMPIONS_DATA_URL =
+      "https://ddragon.leagueoflegends.com/cdn/15.22.1/data/en_US/champion.json";
+    const loadMapping = async () => {
+      try {
+        const res = await fetch(CHAMPIONS_DATA_URL);
+        if (!res.ok) return;
+        const json = await res.json();
+        const data =
+          json && typeof json === "object" ? (json as any).data : null;
+        if (!data || typeof data !== "object") return;
+        const map: Record<string, string> = {};
+        Object.values(data).forEach((c: any) => {
+          if (c && typeof c === "object") {
+            const name: string = String(c.name ?? "");
+            const id: string = String(c.id ?? "");
+            if (name && id) map[name] = id;
+          }
+        });
+        setChampIdByName(map);
+      } catch {}
+    };
+    loadMapping();
+  }, []);
+
+  const getIconUrl = (name: string): string | undefined => {
+    const id = champIdByName[name];
+    return id
+      ? `https://ddragon.leagueoflegends.com/cdn/15.22.1/img/champion/${id}.png`
+      : undefined;
+  };
+
+  const visibleRows = useMemo(() => {
+    const filtered = rows.filter((r) =>
+      r.name.toLowerCase().includes(query.trim().toLowerCase())
+    );
+    const cmpStr = (a: string, b: string) =>
+      a.localeCompare(b, undefined, { sensitivity: "base" });
+    const cmpNum = (a: number, b: number) => a - b;
+    const sorted = [...filtered].sort((a, b) => {
+      let res = 0;
+      switch (sortKey) {
+        case "name":
+          res = cmpStr(a.name, b.name);
+          break;
+        case "pickRate":
+          res = cmpNum(a.pickRate, b.pickRate);
+          break;
+        case "winRate":
+          res = cmpNum(a.winRate, b.winRate);
+          break;
+        case "banRate":
+          res = cmpNum(a.banRate, b.banRate);
+          break;
+      }
+      return sortDir === "asc" ? res : -res;
+    });
+    return sorted;
+  }, [rows, query, sortKey, sortDir]);
+
+  const toggleSort = (key: "name" | "pickRate" | "winRate" | "banRate") => {
+    if (sortKey === key) {
+      setSortDir((d) => (d === "asc" ? "desc" : "asc"));
+    } else {
+      setSortKey(key);
+      setSortDir("desc");
+    }
+  };
+
+  const SortCaret = ({ active }: { active: boolean }) => (
+    <i
+      className={`bi ${
+        sortDir === "asc" ? "bi-caret-up-fill" : "bi-caret-down-fill"
+      }`}
+      aria-hidden={!active}
+      style={{ marginLeft: 6, opacity: active ? 1 : 0.25 }}
+    />
+  );
+
   return (
     <section className="home-section">
       <div className="home-intro">
         <h2 className="home-title">META TIER LIST</h2>
-        <p>Tabella con dati relativi i champions.</p>
+        <p>Champions data table.</p>
+      </div>
+
+      <div className="home-search" style={{ marginBottom: "1rem" }}>
+        <input
+          type="text"
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          placeholder="Search champions..."
+          aria-label="Search champion by name"
+          className="form-control"
+        />
       </div>
 
       <LoadingOverlay
         loading={loading}
         error={error}
-        label="Caricamento Tier List…"
+        label="Loading Tier List…"
         onRetry={() => window.location.reload()}
       />
 
@@ -93,7 +204,7 @@ export default function TierList() {
           <div className="home-card-item">
             <Card className="home-card h-100">
               <Card.Header style={{ backgroundColor: "transparent" }}>
-                Tier List (Database)
+                Tier List
               </Card.Header>
               <Card.Body>
                 <Table
@@ -105,18 +216,83 @@ export default function TierList() {
                 >
                   <thead>
                     <tr>
-                      <th>Name</th>
+                      <th
+                        role="button"
+                        onClick={() => toggleSort("name")}
+                        title="Sort by Name"
+                      >
+                        Name
+                        <SortCaret active={sortKey === "name"} />
+                      </th>
                       <th>Role</th>
-                      <th>Pick Rate</th>
-                      <th>Win Rate</th>
-                      <th>Ban Rate</th>
+                      <th
+                        role="button"
+                        onClick={() => toggleSort("pickRate")}
+                        title="Sort by Pick Rate"
+                      >
+                        Pick Rate
+                        <SortCaret active={sortKey === "pickRate"} />
+                      </th>
+                      <th
+                        role="button"
+                        onClick={() => toggleSort("winRate")}
+                        title="Sort by Win Rate"
+                      >
+                        Win Rate
+                        <SortCaret active={sortKey === "winRate"} />
+                      </th>
+                      <th
+                        role="button"
+                        onClick={() => toggleSort("banRate")}
+                        title="Sort by Ban Rate"
+                      >
+                        Ban Rate
+                        <SortCaret active={sortKey === "banRate"} />
+                      </th>
                       <th>Matches</th>
                     </tr>
                   </thead>
                   <tbody>
-                    {rows.map((r, idx) => (
+                    {visibleRows.map((r, idx) => (
                       <tr key={`${r.name}-${idx}`}>
-                        <td>{r.name}</td>
+                        <td>
+                          <div
+                            style={{
+                              display: "flex",
+                              alignItems: "center",
+                              gap: "0.5rem",
+                            }}
+                          >
+                            {(() => {
+                              const url = getIconUrl(r.name);
+                              if (!url) return null;
+                              return (
+                                <img
+                                  src={url}
+                                  alt={`${r.name} icon`}
+                                  width={28}
+                                  height={28}
+                                  onError={(e) => {
+                                    const svg =
+                                      'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28"><rect width="100%" height="100%" fill="%23212529"/></svg>';
+                                    e.currentTarget.src = svg;
+                                  }}
+                                />
+                              );
+                            })()}
+                            {champIdByName[r.name] ? (
+                              <Link
+                                to={`/Champions/${champIdByName[r.name]}`}
+                                className="text-decoration-none"
+                                aria-label={`Open ${r.name} detail page`}
+                              >
+                                {r.name}
+                              </Link>
+                            ) : (
+                              <span>{r.name}</span>
+                            )}
+                          </div>
+                        </td>
                         <td>{r.role}</td>
                         <td>{fmtPct(r.pickRate)}</td>
                         <td>{fmtPct(r.winRate)}</td>
@@ -124,10 +300,10 @@ export default function TierList() {
                         <td>{fmtInt(r.matches)}</td>
                       </tr>
                     ))}
-                    {rows.length === 0 && (
+                    {visibleRows.length === 0 && (
                       <tr>
                         <td colSpan={6} className="text-center text-secondary">
-                          Nessun dato disponibile.
+                          No data available.
                         </td>
                       </tr>
                     )}
