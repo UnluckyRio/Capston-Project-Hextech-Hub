@@ -810,3 +810,12 @@
     transform: scale(1);
   }
 }
+@media (max-width: 480px) {
+  .home-section {
+    padding-inline: clamp(0.5rem, 4vw, 1rem);
+  }
+  .home-cards {
+    grid-template-columns: 1fr;
+    gap: 0.6rem;
+  }
+}

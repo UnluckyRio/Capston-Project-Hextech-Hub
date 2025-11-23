@@ -13,6 +13,7 @@ export type NavbarProps = {
 
 const Navbar = ({ titleText = "HexTech Hub", onNavSelect }: NavbarProps) => {
   const [imgError, setImgError] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
   const navigate = useNavigate();
   const { isAuthenticated, logout } = useAuth();
   return (
@@ -21,12 +22,22 @@ const Navbar = ({ titleText = "HexTech Hub", onNavSelect }: NavbarProps) => {
       <header className="navbar-header d-flex align-items-center justify-content-between p-3">
         {}
         <div className="d-flex align-items-center gap-2">
+          <button
+            type="button"
+            className="navbar-menu-toggle"
+            aria-label="Apri menu"
+            onClick={() => setMenuOpen(true)}
+          >
+            <i className="bi bi-list" aria-hidden="true"></i>
+          </button>
           <img
             src={logoSrc}
             alt="HexTech Hub Icon"
             className="img-fluid navbar-logo"
             width={100}
             height={100}
+            decoding="async"
+            loading="eager"
           />
           <h1 className="navbar-title m-0">{titleText}</h1>
         </div>
@@ -51,6 +62,8 @@ const Navbar = ({ titleText = "HexTech Hub", onNavSelect }: NavbarProps) => {
                     src={avatarSrc}
                     alt="Immagine profilo utente"
                     onError={() => setImgError(true)}
+                    decoding="async"
+                    loading="lazy"
                   />
                 )}
               </Dropdown.Toggle>
@@ -106,7 +119,7 @@ const Navbar = ({ titleText = "HexTech Hub", onNavSelect }: NavbarProps) => {
       </header>
 
       {}
-      <aside className="navbar-sidebar">
+      <aside className={`navbar-sidebar ${menuOpen ? "open" : ""}`}>
         <Nav className="flex-column" onSelect={onNavSelect}>
           <Nav.Link as={NavLink} to="/" end>
             <i className="bi bi-house me-2" aria-hidden="true"></i>
@@ -131,6 +144,11 @@ const Navbar = ({ titleText = "HexTech Hub", onNavSelect }: NavbarProps) => {
           </Nav.Link>
         </Nav>
       </aside>
+      <div
+        className={`navbar-backdrop ${menuOpen ? "show" : ""}`}
+        onClick={() => setMenuOpen(false)}
+        aria-hidden={!menuOpen}
+      />
     </div>
   );
 };

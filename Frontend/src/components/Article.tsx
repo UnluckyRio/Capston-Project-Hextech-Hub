@@ -69,9 +69,7 @@ export function articleReducer(
   }
 }
 
-function validateArticleInput(
-  input: Pick<ArticleDto, "title" | "excerpt">
-) {
+function validateArticleInput(input: Pick<ArticleDto, "title" | "excerpt">) {
   const errors: Partial<Record<keyof typeof input, string>> = {};
   if (!input.title?.trim()) errors.title = "Title is required";
   if (input.title && input.title.length > 255)
@@ -102,7 +100,9 @@ async function fetchArticles(): Promise<ArticleDto[]> {
   // Semplice caching in-memory per 60s
   const now = Date.now();
   const cacheKey = "articles_public_cache";
-  const cached = (window as any)[cacheKey] as { ts: number; items: ArticleDto[] } | undefined;
+  const cached = (window as any)[cacheKey] as
+    | { ts: number; items: ArticleDto[] }
+    | undefined;
   if (cached && now - cached.ts < 60000) return cached.items;
 
   const { data } = await api.get("/api/articles/public");
@@ -166,7 +166,9 @@ export default function Article() {
   const filtered = useMemo(() => {
     if (state.filter === "All") return state.items;
     return state.items.filter((a) =>
-      a.category ? splitCategories(a.category).includes(state.filter as ArticleCategory) : true
+      a.category
+        ? splitCategories(a.category).includes(state.filter as ArticleCategory)
+        : true
     );
   }, [state.items, state.filter]);
 
@@ -203,47 +205,49 @@ export default function Article() {
 
   return (
     <section className="home-section article-section">
-      <div className="home-card" style={{ padding: "0.75rem" }}>
-        <h2 className="home-title">Create new article</h2>
-        {state.submitError && (
-          <div className="alert alert-danger" role="alert">
-            {state.submitError}
-          </div>
-        )}
-        <form onSubmit={handleSubmit} noValidate>
-          <div className="row g-3">
-            <div className="col-12 col-md-6">
-              <label htmlFor="title" className="form-label">
-                Title
-              </label>
-              <input
-                id="title"
-                name="title"
-                type="text"
-                className={`form-control ${
-                  fieldErrors.title ? "is-invalid" : ""
-                }`}
-                maxLength={255}
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
-                required
-                placeholder="Enter the title"
-              />
-              {fieldErrors.title && (
-                <div className="invalid-feedback">{fieldErrors.title}</div>
-              )}
+      {isAuthenticated && (
+        <div className="home-card" style={{ padding: "0.75rem" }}>
+          <h2 className="home-title">Create new article</h2>
+          {state.submitError && (
+            <div className="alert alert-danger" role="alert">
+              {state.submitError}
             </div>
-            <div className="col-12 col-md-6">
-              <label id="categoriesLabel" className="form-label">
-                Category
-              </label>
-              <div
-                className="category-group"
-                role="radiogroup"
-                aria-labelledby="categoriesLabel"
-              >
-                {(["News", "Meta Content", "Guides"] as ArticleCategory[]).map(
-                  (cat) => {
+          )}
+          <form onSubmit={handleSubmit} noValidate>
+            <div className="row g-3">
+              <div className="col-12 col-md-6">
+                <label htmlFor="title" className="form-label">
+                  Title
+                </label>
+                <input
+                  id="title"
+                  name="title"
+                  type="text"
+                  className={`form-control ${
+                    fieldErrors.title ? "is-invalid" : ""
+                  }`}
+                  maxLength={255}
+                  value={title}
+                  onChange={(e) => setTitle(e.target.value)}
+                  required
+                  placeholder="Enter the title"
+                />
+                {fieldErrors.title && (
+                  <div className="invalid-feedback">{fieldErrors.title}</div>
+                )}
+              </div>
+              <div className="col-12 col-md-6">
+                <label id="categoriesLabel" className="form-label">
+                  Category
+                </label>
+                <div
+                  className="category-group"
+                  role="radiogroup"
+                  aria-labelledby="categoriesLabel"
+                >
+                  {(
+                    ["News", "Meta Content", "Guides"] as ArticleCategory[]
+                  ).map((cat) => {
                     const active = categories.includes(cat);
                     return (
                       <div
@@ -275,45 +279,45 @@ export default function Article() {
                         <span className="pill-text">{cat}</span>
                       </div>
                     );
-                  }
+                  })}
+                </div>
+                {fieldErrors.category && (
+                  <div className="invalid-feedback">{fieldErrors.category}</div>
                 )}
               </div>
-              {fieldErrors.category && (
-                <div className="invalid-feedback">{fieldErrors.category}</div>
-              )}
+              <div className="col-12">
+                <label htmlFor="excerpt" className="form-label">
+                  Excerpt
+                </label>
+                <textarea
+                  id="excerpt"
+                  name="excerpt"
+                  className={`form-control ${
+                    fieldErrors.excerpt ? "is-invalid" : ""
+                  }`}
+                  rows={4}
+                  value={excerpt}
+                  onChange={(e) => setExcerpt(e.target.value)}
+                  required
+                  placeholder="Enter a summary..."
+                />
+                {fieldErrors.excerpt && (
+                  <div className="invalid-feedback">{fieldErrors.excerpt}</div>
+                )}
+              </div>
+              <div className="col-12 d-flex justify-content-end">
+                <button
+                  type="submit"
+                  className="btn btn-primary"
+                  disabled={state.submitting}
+                >
+                  {state.submitting ? "Submitting…" : "Publish"}
+                </button>
+              </div>
             </div>
-            <div className="col-12">
-              <label htmlFor="excerpt" className="form-label">
-                Excerpt
-              </label>
-              <textarea
-                id="excerpt"
-                name="excerpt"
-                className={`form-control ${
-                  fieldErrors.excerpt ? "is-invalid" : ""
-                }`}
-                rows={4}
-                value={excerpt}
-                onChange={(e) => setExcerpt(e.target.value)}
-                required
-                placeholder="Enter a summary..."
-              />
-              {fieldErrors.excerpt && (
-                <div className="invalid-feedback">{fieldErrors.excerpt}</div>
-              )}
-            </div>
-            <div className="col-12 d-flex justify-content-end">
-              <button
-                type="submit"
-                className="btn btn-primary"
-                disabled={state.submitting}
-              >
-                {state.submitting ? "Submitting…" : "Publish"}
-              </button>
-            </div>
-          </div>
-        </form>
-      </div>
+          </form>
+        </div>
+      )}
       <div className="home-intro">
         <h2 className="home-title">Articles</h2>
         <p>Read News, Meta Content and Guides from the community.</p>
@@ -364,9 +368,7 @@ export default function Article() {
                 <div className="article-item">
                   <div className="article-texts">
                     <Card.Title>
-                      <NavLink to={`/Article/${a.id}`} className="home-link">
-                        {a.title}
-                      </NavLink>
+                      <span className="home-link">{a.title}</span>
                     </Card.Title>
                     <Card.Text>
                       <span>{a.excerpt}</span>
