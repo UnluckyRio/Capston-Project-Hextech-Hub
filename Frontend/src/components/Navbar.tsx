@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Nav from "react-bootstrap/Nav";
 import Dropdown from "react-bootstrap/Dropdown";
 import { NavLink, useNavigate } from "react-router-dom";
@@ -8,14 +8,29 @@ import "../styles/Navbar.scss";
 import { useAuth } from "../context/AuthContext";
 export type NavbarProps = {
   titleText?: string;
-  onNavSelect?: (selectedKey: string | null) => void;
 };
 
-const Navbar = ({ titleText = "HexTech Hub", onNavSelect }: NavbarProps) => {
+const Navbar = ({ titleText = "HexTech Hub" }: NavbarProps) => {
   const [imgError, setImgError] = useState(false);
-  const [menuOpen, setMenuOpen] = useState(false);
+  const [menuOpen, setMenuOpen] = useState<boolean>(() => {
+    try {
+      const v = localStorage.getItem("hextech.menuOpen");
+      return v ? v === "open" : true;
+    } catch {
+      return true;
+    }
+  });
   const navigate = useNavigate();
   const { isAuthenticated, logout } = useAuth();
+  useEffect(() => {
+    try {
+      localStorage.setItem("hextech.menuOpen", menuOpen ? "open" : "closed");
+    } catch {
+      void 0;
+    }
+    const root = document.documentElement;
+    root.style.setProperty("--sidebar-width", menuOpen ? "240px" : "0px");
+  }, [menuOpen]);
   return (
     <div className="navbar-container">
       {}
@@ -25,8 +40,9 @@ const Navbar = ({ titleText = "HexTech Hub", onNavSelect }: NavbarProps) => {
           <button
             type="button"
             className="navbar-menu-toggle"
-            aria-label="Apri menu"
-            onClick={() => setMenuOpen(true)}
+            aria-label={menuOpen ? "Chiudi menu" : "Apri menu"}
+            aria-pressed={menuOpen}
+            onClick={() => setMenuOpen((v) => !v)}
           >
             <i className="bi bi-list" aria-hidden="true"></i>
           </button>
@@ -86,8 +102,17 @@ const Navbar = ({ titleText = "HexTech Hub", onNavSelect }: NavbarProps) => {
                   Administration
                 </Dropdown.Item>
                 <Dropdown.Divider />
-                <Dropdown.Item as="button" onClick={() => { logout(); navigate("/", { replace: true }); }}>
-                  <i className="bi bi-box-arrow-right me-2" aria-hidden="true"></i>
+                <Dropdown.Item
+                  as="button"
+                  onClick={() => {
+                    logout();
+                    navigate("/", { replace: true });
+                  }}
+                >
+                  <i
+                    className="bi bi-box-arrow-right me-2"
+                    aria-hidden="true"
+                  ></i>
                   Logout
                 </Dropdown.Item>
               </Dropdown.Menu>
@@ -120,7 +145,7 @@ const Navbar = ({ titleText = "HexTech Hub", onNavSelect }: NavbarProps) => {
 
       {}
       <aside className={`navbar-sidebar ${menuOpen ? "open" : ""}`}>
-        <Nav className="flex-column" onSelect={onNavSelect}>
+        <Nav className="flex-column">
           <Nav.Link as={NavLink} to="/" end>
             <i className="bi bi-house me-2" aria-hidden="true"></i>
             Home
