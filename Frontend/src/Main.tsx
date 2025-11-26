@@ -7,7 +7,7 @@ import { AuthProvider } from "./context/AuthContext.tsx";
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <AuthProvider>
-      <BrowserRouter basename="/Hextech-Hub">
+      <BrowserRouter basename="/Capston-Project-Hextech-Hub">
         <App />
       </BrowserRouter>
     </AuthProvider>
