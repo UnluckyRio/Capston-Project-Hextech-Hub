@@ -1,6 +1,5 @@
 import { useEffect, useMemo, useReducer, useState } from "react";
 import Card from "react-bootstrap/Card";
-import { NavLink } from "react-router-dom";
 import "../styles/Article.scss";
 import { ARTICLES } from "../data/articles";
 import type { ArticleCategory } from "../data/articles";
