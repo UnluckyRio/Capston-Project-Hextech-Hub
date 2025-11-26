@@ -5,7 +5,7 @@ import api from "../api/client";
 import "../styles/Home.scss";
 import "../styles/login.scss";
 
-// Il backend attende email e password in chiaro, non è richiesto CSRF custom
+
 
 const Login = () => {
   const navigate = useNavigate();
@@ -73,16 +73,16 @@ const Login = () => {
                 Email
               </label>
               <input
-                id="identifier"
-                name="identifier"
-                type="text"
-                className="form-control"
-                value={identifier}
-                onChange={(e) => setIdentifier(e.target.value)}
-                aria-invalid={!idValid}
-                aria-describedby="identifier-help"
-                required
-              />
+                  id="identifier"
+                  name="identifier"
+                  type="text"
+                  className="form-control"
+                  value={identifier}
+                  onChange={(e) => setIdentifier(e.target.value)}
+                  aria-invalid={!idValid}
+                  aria-describedby="identifier-help"
+                  required />
+
               <div id="identifier-help" className="form-text text-light">
                 Usa la tua email (formato valido).
               </div>
@@ -94,23 +94,23 @@ const Login = () => {
               </label>
               <div className="input-group">
                 <input
-                  id="password"
-                  name="password"
-                  type={showPassword ? "text" : "password"}
-                  className="form-control"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  minLength={6}
-                  required
-                  aria-describedby="password-help"
-                />
+                    id="password"
+                    name="password"
+                    type={showPassword ? "text" : "password"}
+                    className="form-control"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    minLength={6}
+                    required
+                    aria-describedby="password-help" />
+
                 <button
-                  type="button"
-                  className="btn btn-outline-primary"
-                  onClick={() => setShowPassword((v) => !v)}
-                  aria-pressed={showPassword}
-                  aria-label={showPassword ? "Hide password" : "Show password"}
-                >
+                    type="button"
+                    className="btn btn-outline-primary"
+                    onClick={() => setShowPassword((v) => !v)}
+                    aria-pressed={showPassword}
+                    aria-label={showPassword ? "Hide password" : "Show password"}>
+
                   {showPassword ? "Hide" : "Show"}
                 </button>
               </div>
@@ -121,46 +121,46 @@ const Login = () => {
 
             <div className="form-check mb-3">
               <input
-                className="form-check-input"
-                type="checkbox"
-                id="remember"
-                checked={remember}
-                onChange={(e) => setRemember(e.target.checked)}
-              />
+                  className="form-check-input"
+                  type="checkbox"
+                  id="remember"
+                  checked={remember}
+                  onChange={(e) => setRemember(e.target.checked)} />
+
               <label className="form-check-label text-light" htmlFor="remember">
                 Remember me
               </label>
             </div>
 
-            {error && (
+            {error &&
               <div className="alert alert-danger" role="alert">
                 {error}
               </div>
-            )}
-            {signupSuccess && (
-              // Mostra un messaggio di successo se si arriva dalla registrazione
+              }
+            {signupSuccess &&
+
               <div className="alert alert-success" role="alert">
                 {signupSuccess}
               </div>
-            )}
+              }
 
             <div className="d-flex align-items-center gap-2">
               <button
-                type="submit"
-                className="btn btn-primary"
-                disabled={!canSubmit}
-                aria-busy={loading}
-              >
-                {loading ? (
-                  <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
-                ) : null}
+                  type="submit"
+                  className="btn btn-primary"
+                  disabled={!canSubmit}
+                  aria-busy={loading}>
+
+                {loading ?
+                  <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span> :
+                  null}
                 Sign In
               </button>
               <button
-                type="button"
-                className="btn btn-warning text-dark"
-                onClick={() => navigate("/signup")}
-              >
+                  type="button"
+                  className="btn btn-warning text-dark"
+                  onClick={() => navigate("/signup")}>
+
                 Sign Up
               </button>
             </div>
@@ -174,8 +174,8 @@ const Login = () => {
         </div>
         </div>
       </main>
-    </div>
-  );
+    </div>);
+
 };
 
 export default Login;

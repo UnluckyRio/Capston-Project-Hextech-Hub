@@ -5,8 +5,8 @@ import api from "../api/client";
 import "../styles/Home.scss";
 import "../styles/signup.scss";
 
-// Il backend Spring espone POST /api/auth/register e si aspetta la password in chiaro;
-// niente CSRF custom né hashing lato client: l'hashing viene fatto lato server (BCrypt)
+
+
 
 const SignUp = () => {
   const navigate = useNavigate();
@@ -58,44 +58,44 @@ const SignUp = () => {
   const termsValid = terms === true;
 
   const canSubmit =
-    nameValid &&
-    surnameValid &&
-    emailValid &&
-    riotValid &&
-    regionValid &&
-    passwordValid &&
-    confirmValid &&
-    termsValid &&
-    !loading;
+  nameValid &&
+  surnameValid &&
+  emailValid &&
+  riotValid &&
+  regionValid &&
+  passwordValid &&
+  confirmValid &&
+  termsValid &&
+  !loading;
 
   const markTouched = (field: string) =>
-    setTouched((t) => ({ ...t, [field]: true }));
+  setTouched((t) => ({ ...t, [field]: true }));
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!canSubmit) {
       [
-        "nome",
-        "cognome",
-        "email",
-        "riotId",
-        "region",
-        "password",
-        "confirm",
-        "terms",
-      ].forEach(markTouched);
+      "nome",
+      "cognome",
+      "email",
+      "riotId",
+      "region",
+      "password",
+      "confirm",
+      "terms"].
+      forEach(markTouched);
       return;
     }
     setLoading(true);
     setError(null);
     try {
-      // Allinea al backend: /api/auth/signup con {email,password,fullName}
+
       const payload = {
         email: email.trim().toLowerCase(),
         password: password,
         fullName: `${nome.trim()} ${cognome.trim()}`.trim(),
         riotId: riotId.trim(),
-        region: region as any,
+        region: region as any
       };
       await api.post("/api/auth/signup", payload);
       navigate("/login", { replace: true, state: { signupSuccess: "Account creato, effettua il login." } });
@@ -130,22 +130,22 @@ const SignUp = () => {
                   name="nome"
                   type="text"
                   className={`form-control ${
-                    touched.nome && !nameValid ? "is-invalid" : ""
-                  }`}
+                  touched.nome && !nameValid ? "is-invalid" : ""}`
+                  }
                   value={nome}
                   onChange={(e) => setNome(e.target.value)}
                   onBlur={() => markTouched("nome")}
                   aria-invalid={touched.nome && !nameValid}
-                  required
-                />
+                  required />
+
                 <div className="form-text text-light">
                   At least 2 characters.
                 </div>
-                {touched.nome && !nameValid && (
-                  <div className="invalid-feedback">
+                {touched.nome && !nameValid &&
+                <div className="invalid-feedback">
                     Enter a valid first name.
                   </div>
-                )}
+                }
               </div>
 
               <div className="mb-3">
@@ -157,22 +157,22 @@ const SignUp = () => {
                   name="cognome"
                   type="text"
                   className={`form-control ${
-                    touched.cognome && !surnameValid ? "is-invalid" : ""
-                  }`}
+                  touched.cognome && !surnameValid ? "is-invalid" : ""}`
+                  }
                   value={cognome}
                   onChange={(e) => setCognome(e.target.value)}
                   onBlur={() => markTouched("cognome")}
                   aria-invalid={touched.cognome && !surnameValid}
-                  required
-                />
+                  required />
+
                 <div className="form-text text-light">
                   At least 2 characters.
                 </div>
-                {touched.cognome && !surnameValid && (
-                  <div className="invalid-feedback">
+                {touched.cognome && !surnameValid &&
+                <div className="invalid-feedback">
                     Enter a valid last name.
                   </div>
-                )}
+                }
               </div>
 
               <div className="mb-3">
@@ -184,18 +184,18 @@ const SignUp = () => {
                   name="email"
                   type="email"
                   className={`form-control ${
-                    touched.email && !emailValid ? "is-invalid" : ""
-                  }`}
+                  touched.email && !emailValid ? "is-invalid" : ""}`
+                  }
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   onBlur={() => markTouched("email")}
                   aria-invalid={touched.email && !emailValid}
-                  required
-                />
+                  required />
+
                 <div className="form-text text-light">Enter a valid email.</div>
-                {touched.email && !emailValid && (
-                  <div className="invalid-feedback">Invalid email.</div>
-                )}
+                {touched.email && !emailValid &&
+                <div className="invalid-feedback">Invalid email.</div>
+                }
               </div>
 
               <div className="mb-3">
@@ -209,21 +209,21 @@ const SignUp = () => {
                     type="text"
                     placeholder="SummonerName#TAG"
                     className={`form-control ${
-                      touched.riotId && !riotValid ? "is-invalid" : ""
-                    }`}
+                    touched.riotId && !riotValid ? "is-invalid" : ""}`
+                    }
                     value={riotId}
                     onChange={(e) => setRiotId(e.target.value)}
                     onBlur={() => markTouched("riotId")}
                     aria-invalid={touched.riotId && !riotValid}
-                    required
-                  />
+                    required />
+
                 </div>
                 <div className="form-text text-light">
                   Format: Name#TAG (e.g., Faker#KR1).
                 </div>
-                {touched.riotId && !riotValid && (
-                  <div className="invalid-feedback">Invalid Riot ID.</div>
-                )}
+                {touched.riotId && !riotValid &&
+                <div className="invalid-feedback">Invalid Riot ID.</div>
+                }
               </div>
 
               <div className="mb-3">
@@ -235,49 +235,49 @@ const SignUp = () => {
                     <button
                       type="button"
                       className={`region-btn ${
-                        region === "NA" ? "active" : ""
-                      }`}
+                      region === "NA" ? "active" : ""}`
+                      }
                       onClick={() => setRegion("NA")}
                       onBlur={() => markTouched("region")}
                       aria-pressed={region === "NA"}
-                      aria-label="North America"
-                    >
+                      aria-label="North America">
+
                       <i className="bi bi-compass" aria-hidden="true"></i>
                       <span>NA</span>
                     </button>
                     <button
                       type="button"
                       className={`region-btn ${
-                        region === "EUW" ? "active" : ""
-                      }`}
+                      region === "EUW" ? "active" : ""}`
+                      }
                       onClick={() => setRegion("EUW")}
                       onBlur={() => markTouched("region")}
                       aria-pressed={region === "EUW"}
-                      aria-label="EU West"
-                    >
+                      aria-label="EU West">
+
                       <i className="bi bi-geo-alt" aria-hidden="true"></i>
                       <span>EU West</span>
                     </button>
                     <button
                       type="button"
-                    className={`region-btn ${
-                        region === "EUNE" ? "active" : ""
-                      }`}
+                      className={`region-btn ${
+                      region === "EUNE" ? "active" : ""}`
+                      }
                       onClick={() => setRegion("EUNE")}
                       onBlur={() => markTouched("region")}
                       aria-pressed={region === "EUNE"}
-                      aria-label="EU Nordic/East"
-                    >
+                      aria-label="EU Nordic/East">
+
                       <i className="bi bi-pin-map" aria-hidden="true"></i>
                       <span>EU Nordic/East</span>
                     </button>
                   </div>
                 </div>
-                {!regionValid && touched.region && (
-                  <div className="invalid-feedback d-block">
+                {!regionValid && touched.region &&
+                <div className="invalid-feedback d-block">
                     Select a region to continue.
                   </div>
-                )}
+                }
                 <div className="form-text text-light">
                   Select your server region.
                 </div>
@@ -293,23 +293,23 @@ const SignUp = () => {
                     name="password"
                     type={showPwd ? "text" : "password"}
                     className={`form-control ${
-                      touched.password && !passwordValid ? "is-invalid" : ""
-                    }`}
+                    touched.password && !passwordValid ? "is-invalid" : ""}`
+                    }
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     onBlur={() => markTouched("password")}
                     minLength={8}
                     required
                     aria-describedby="password-help"
-                    aria-invalid={touched.password && !passwordValid}
-                  />
+                    aria-invalid={touched.password && !passwordValid} />
+
                   <button
                     type="button"
                     className="btn btn-outline-primary"
                     onClick={() => setShowPwd((v) => !v)}
                     aria-pressed={showPwd}
-                    aria-label={showPwd ? "Hide password" : "Show password"}
-                  >
+                    aria-label={showPwd ? "Hide password" : "Show password"}>
+
                     {showPwd ? "Hide" : "Show"}
                   </button>
                 </div>
@@ -317,11 +317,11 @@ const SignUp = () => {
                   At least 8 characters, with at least one uppercase, one
                   lowercase and one digit.
                 </div>
-                {touched.password && !passwordValid && (
-                  <div className="invalid-feedback">
+                {touched.password && !passwordValid &&
+                <div className="invalid-feedback">
                     Password does not meet the requirements.
                   </div>
-                )}
+                }
               </div>
 
               <div className="mb-3">
@@ -334,31 +334,31 @@ const SignUp = () => {
                     name="confirm"
                     type={showConfirm ? "text" : "password"}
                     className={`form-control ${
-                      touched.confirm && !confirmValid ? "is-invalid" : ""
-                    }`}
+                    touched.confirm && !confirmValid ? "is-invalid" : ""}`
+                    }
                     value={confirm}
                     onChange={(e) => setConfirm(e.target.value)}
                     onBlur={() => markTouched("confirm")}
                     required
-                    aria-invalid={touched.confirm && !confirmValid}
-                  />
+                    aria-invalid={touched.confirm && !confirmValid} />
+
                   <button
                     type="button"
                     className="btn btn-outline-primary"
                     onClick={() => setShowConfirm((v) => !v)}
                     aria-pressed={showConfirm}
                     aria-label={
-                      showConfirm ? "Hide confirmation" : "Show confirmation"
-                    }
-                  >
+                    showConfirm ? "Hide confirmation" : "Show confirmation"
+                    }>
+
                     {showConfirm ? "Hide" : "Show"}
                   </button>
                 </div>
-                {touched.confirm && !confirmValid && (
-                  <div className="invalid-feedback">
+                {touched.confirm && !confirmValid &&
+                <div className="invalid-feedback">
                     Passwords do not match.
                   </div>
-                )}
+                }
               </div>
 
               <div className="form-check mb-3">
@@ -370,41 +370,41 @@ const SignUp = () => {
                   onChange={(e) => setTerms(e.target.checked)}
                   onBlur={() => markTouched("terms")}
                   aria-invalid={touched.terms && !termsValid}
-                  required
-                />
+                  required />
+
                 <label className="form-check-label text-light" htmlFor="terms">
                   I accept the{" "}
                   <a href="#/terms" className="link-info">
                     Terms of Service
                   </a>
                 </label>
-                {touched.terms && !termsValid && (
-                  <div className="invalid-feedback d-block">
+                {touched.terms && !termsValid &&
+                <div className="invalid-feedback d-block">
                     You must accept the Terms.
                   </div>
-                )}
+                }
               </div>
 
-              {error && (
-                <div className="alert alert-danger" role="alert">
+              {error &&
+              <div className="alert alert-danger" role="alert">
                   {error}
                 </div>
-              )}
+              }
 
               <div className="d-flex align-items-center gap-2">
                 <button
                   type="submit"
                   className="btn btn-warning text-dark"
                   disabled={!canSubmit}
-                  aria-busy={loading}
-                >
-                  {loading ? (
-                    <span
-                      className="spinner-border spinner-border-sm me-2"
-                      role="status"
-                      aria-hidden="true"
-                    ></span>
-                  ) : null}
+                  aria-busy={loading}>
+
+                  {loading ?
+                  <span
+                    className="spinner-border spinner-border-sm me-2"
+                    role="status"
+                    aria-hidden="true">
+                  </span> :
+                  null}
                   Sign Up
                 </button>
               </div>
@@ -412,8 +412,8 @@ const SignUp = () => {
           </div>
         </div>
       </main>
-    </div>
-  );
+    </div>);
+
 };
 
 export default SignUp;

@@ -17,8 +17,8 @@ export default function Footer() {
               href="https://github.com/UnluckyRio/HexTech-Hub"
               aria-label="GitHub"
               target="_blank"
-              rel="noopener noreferrer"
-            >
+              rel="noopener noreferrer">
+
               <i className="bi bi-github"></i>
             </a>
             <a
@@ -26,8 +26,8 @@ export default function Footer() {
               href="https://x.com/HexTech_Hub"
               aria-label="X"
               target="_blank"
-              rel="noopener noreferrer"
-            >
+              rel="noopener noreferrer">
+
               <i className="bi bi-twitter-x"></i>
             </a>
             <a
@@ -35,13 +35,13 @@ export default function Footer() {
               href="https://www.youtube.com/@HexTech-Hub"
               aria-label="YouTube"
               target="_blank"
-              rel="noopener noreferrer"
-            >
+              rel="noopener noreferrer">
+
               <i className="bi bi-youtube"></i>
             </a>
           </div>
         </div>
       </footer>
-    </>
-  );
+    </>);
+
 }

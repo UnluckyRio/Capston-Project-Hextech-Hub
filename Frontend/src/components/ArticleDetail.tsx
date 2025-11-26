@@ -16,8 +16,8 @@ export default function ArticleDetail() {
             ← Torna agli Articles
           </NavLink>
         </div>
-      </section>
-    );
+      </section>);
+
   }
 
   return (
@@ -58,6 +58,6 @@ export default function ArticleDetail() {
           </Card>
         </div>
       </div>
-    </section>
-  );
+    </section>);
+
 }

@@ -1,6 +1,6 @@
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
 
-// Context di autenticazione: gestisce token JWT e helper
+
 type AuthContextValue = {
   isAuthenticated: boolean;
   token: string | null;
@@ -10,33 +10,33 @@ type AuthContextValue = {
 
 const AuthContext = createContext<AuthContextValue | undefined>(undefined);
 
-export function AuthProvider({ children }: { children: React.ReactNode }) {
+export function AuthProvider({ children }: {children: React.ReactNode;}) {
   const [token, setToken] = useState<string | null>(null);
 
   useEffect(() => {
     try {
       const stored = localStorage.getItem("hextech.jwt");
       if (stored) setToken(stored);
-    } catch {/* noop */}
+    } catch {}
   }, []);
 
   const login = (t: string, remember = true) => {
     setToken(t);
     if (remember) {
-      try { localStorage.setItem("hextech.jwt", t); } catch {/* noop */}
+      try {localStorage.setItem("hextech.jwt", t);} catch {}
     }
   };
 
   const logout = () => {
     setToken(null);
-    try { localStorage.removeItem("hextech.jwt"); } catch {/* noop */}
+    try {localStorage.removeItem("hextech.jwt");} catch {}
   };
 
   const value = useMemo<AuthContextValue>(() => ({
     isAuthenticated: !!token,
     token,
     login,
-    logout,
+    logout
   }), [token]);
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

@@ -42,8 +42,8 @@ const Navbar = ({ titleText = "HexTech Hub" }: NavbarProps) => {
             className="navbar-menu-toggle"
             aria-label={menuOpen ? "Chiudi menu" : "Apri menu"}
             aria-pressed={menuOpen}
-            onClick={() => setMenuOpen((v) => !v)}
-          >
+            onClick={() => setMenuOpen((v) => !v)}>
+            
             <i className="bi bi-list" aria-hidden="true"></i>
           </button>
           <img
@@ -53,42 +53,42 @@ const Navbar = ({ titleText = "HexTech Hub" }: NavbarProps) => {
             width={100}
             height={100}
             decoding="async"
-            loading="eager"
-          />
+            loading="eager" />
+          
           <h1 className="navbar-title m-0">{titleText}</h1>
         </div>
 
         {}
         <div className="navbar-account">
-          {isAuthenticated ? (
-            <Dropdown autoClose="outside">
+          {isAuthenticated ?
+          <Dropdown autoClose="outside">
               <Dropdown.Toggle
-                id="navbar-account-toggle"
-                className="navbar-account-btn"
-                aria-label="Apri menu account"
-                aria-haspopup="menu"
-              >
-                {imgError ? (
-                  <i
-                    className="bi bi-person-fill navbar-account-fallback"
-                    aria-hidden="true"
-                  ></i>
-                ) : (
-                  <img
-                    src={avatarSrc}
-                    alt="Immagine profilo utente"
-                    onError={() => setImgError(true)}
-                    decoding="async"
-                    loading="lazy"
-                  />
-                )}
+              id="navbar-account-toggle"
+              className="navbar-account-btn"
+              aria-label="Apri menu account"
+              aria-haspopup="menu">
+              
+                {imgError ?
+              <i
+                className="bi bi-person-fill navbar-account-fallback"
+                aria-hidden="true">
+              </i> :
+
+              <img
+                src={avatarSrc}
+                alt="Immagine profilo utente"
+                onError={() => setImgError(true)}
+                decoding="async"
+                loading="lazy" />
+
+              }
               </Dropdown.Toggle>
               <Dropdown.Menu
-                align="end"
-                className="navbar-account-dropdown"
-                role="menu"
-                aria-label="Menu account"
-              >
+              align="end"
+              className="navbar-account-dropdown"
+              role="menu"
+              aria-label="Menu account">
+              
                 <Dropdown.Item href="#/profile">
                   <i className="bi bi-person me-2" aria-hidden="true"></i>
                   Profile
@@ -103,43 +103,43 @@ const Navbar = ({ titleText = "HexTech Hub" }: NavbarProps) => {
                 </Dropdown.Item>
                 <Dropdown.Divider />
                 <Dropdown.Item
-                  as="button"
-                  onClick={() => {
-                    logout();
-                    navigate("/", { replace: true });
-                  }}
-                >
+                as="button"
+                onClick={() => {
+                  logout();
+                  navigate("/", { replace: true });
+                }}>
+                
                   <i
-                    className="bi bi-box-arrow-right me-2"
-                    aria-hidden="true"
-                  ></i>
+                  className="bi bi-box-arrow-right me-2"
+                  aria-hidden="true">
+                </i>
                   Logout
                 </Dropdown.Item>
               </Dropdown.Menu>
-            </Dropdown>
-          ) : (
-            <div
-              className="navbar-auth-actions"
-              aria-label="Authentication actions"
-            >
+            </Dropdown> :
+
+          <div
+            className="navbar-auth-actions"
+            aria-label="Authentication actions">
+            
               <button
-                type="button"
-                className="btn btn-primary navbar-auth-btn"
-                onClick={() => navigate("/login")}
-                aria-label="Go to login page"
-              >
+              type="button"
+              className="btn btn-primary navbar-auth-btn"
+              onClick={() => navigate("/login")}
+              aria-label="Go to login page">
+              
                 Login
               </button>
               <button
-                type="button"
-                className="btn btn-warning text-dark navbar-auth-btn"
-                onClick={() => navigate("/signup")}
-                aria-label="Go to registration page"
-              >
+              type="button"
+              className="btn btn-warning text-dark navbar-auth-btn"
+              onClick={() => navigate("/signup")}
+              aria-label="Go to registration page">
+              
                 Sign Up
               </button>
             </div>
-          )}
+          }
         </div>
       </header>
 
@@ -172,9 +172,9 @@ const Navbar = ({ titleText = "HexTech Hub" }: NavbarProps) => {
       <div
         className={`navbar-backdrop ${menuOpen ? "show" : ""}`}
         onClick={() => setMenuOpen(false)}
-        aria-hidden={!menuOpen}
-      />
-    </div>
-  );
+        aria-hidden={!menuOpen} />
+      
+    </div>);
+
 };
 export default Navbar;

@@ -35,8 +35,8 @@ function Home() {
             <Card.Img
               variant="top"
               src={leagueImg1}
-              alt="League of Legends - Select a Champion"
-            />
+              alt="League of Legends - Select a Champion" />
+
             <Card.Body>
               <Card.Title>Select a Champion</Card.Title>
               <Card.Text>
@@ -52,8 +52,8 @@ function Home() {
             <Card.Img
               variant="top"
               src={leagueImg2}
-              alt="League of Legends - Choose your Role"
-            />
+              alt="League of Legends - Choose your Role" />
+
             <Card.Body>
               <Card.Title>Choose your Role</Card.Title>
               <Card.Text>
@@ -70,8 +70,8 @@ function Home() {
             <Card.Img
               variant="top"
               src={leagueImg3}
-              alt="League of Legends - Destroy the Base"
-            />
+              alt="League of Legends - Destroy the Base" />
+
             <Card.Body>
               <Card.Title>Destroy the Base</Card.Title>
               <Card.Text>
@@ -97,8 +97,8 @@ function Home() {
             <Card.Img
               variant="top"
               src={leagueImg6}
-              alt="League of Legends - Champions with the Highest Win Rate"
-            />
+              alt="League of Legends - Champions with the Highest Win Rate" />
+
             <Card.Body>
               <Card.Title>Champions with the Highest Win Rate</Card.Title>
               <Card.Text>
@@ -114,8 +114,8 @@ function Home() {
             <Card.Img
               variant="top"
               src={leagueImg4}
-              alt="League of Legends - Best Build for your Champion"
-            />
+              alt="League of Legends - Best Build for your Champion" />
+
             <Card.Body>
               <Card.Title>Best Build for your Champion</Card.Title>
               <Card.Text>
@@ -131,8 +131,8 @@ function Home() {
             <Card.Img
               variant="top"
               src={leagueImg5}
-              alt="League of Legends - Skill Upgrade Order and Runes"
-            />
+              alt="League of Legends - Skill Upgrade Order and Runes" />
+
             <Card.Body>
               <Card.Title>Skill Upgrade Order and Runes</Card.Title>
               <Card.Text>
@@ -163,8 +163,8 @@ function Home() {
             <Card.Img
               variant="top"
               src={leagueImg10}
-              alt="League of Legends - Tier List"
-            />
+              alt="League of Legends - Tier List" />
+
             <Card.Body>
               <Card.Title>Tier List</Card.Title>
               <Card.Text>
@@ -181,8 +181,8 @@ function Home() {
             <Card.Img
               variant="top"
               src={leagueImg11}
-              alt="League of Legends - Best pick for each role"
-            />
+              alt="League of Legends - Best pick for each role" />
+
             <Card.Body>
               <Card.Title>Best Pick for each Role</Card.Title>
               <Card.Text>
@@ -198,8 +198,8 @@ function Home() {
             <Card.Img
               variant="top"
               src={leagueImg12}
-              alt="League of Legends - Analytics"
-            />
+              alt="League of Legends - Analytics" />
+
             <Card.Body>
               <Card.Title>Analytics</Card.Title>
               <Card.Text>
@@ -230,8 +230,8 @@ function Home() {
             <Card.Img
               variant="top"
               src={leagueImg15}
-              alt="League of Legends - All Champions List"
-            />
+              alt="League of Legends - All Champions List" />
+
             <Card.Body>
               <Card.Title>All Champions List</Card.Title>
               <Card.Text>
@@ -247,8 +247,8 @@ function Home() {
             <Card.Img
               variant="top"
               src={leagueImg13}
-              alt="League of Legends - Free Rotation"
-            />
+              alt="League of Legends - Free Rotation" />
+
             <Card.Body>
               <Card.Title>Free rotation</Card.Title>
               <Card.Text>
@@ -265,8 +265,8 @@ function Home() {
             <Card.Img
               variant="top"
               src={leagueImg14}
-              alt="League of Legends - Tips and Tricks"
-            />
+              alt="League of Legends - Tips and Tricks" />
+
             <Card.Body>
               <Card.Title>Tips and Tricks</Card.Title>
               <Card.Text>
@@ -297,8 +297,8 @@ function Home() {
             <Card.Img
               variant="top"
               src={leagueImg7}
-              alt="League of Legends - News"
-            />
+              alt="League of Legends - News" />
+
             <Card.Body>
               <Card.Title>News</Card.Title>
               <Card.Text>
@@ -314,8 +314,8 @@ function Home() {
             <Card.Img
               variant="top"
               src={leagueImg8}
-              alt="League of Legends - Meta Content"
-            />
+              alt="League of Legends - Meta Content" />
+
             <Card.Body>
               <Card.Title>Meta content</Card.Title>
               <Card.Text>
@@ -331,8 +331,8 @@ function Home() {
             <Card.Img
               variant="top"
               src={leagueImg9}
-              alt="League of Legends - Guides"
-            />
+              alt="League of Legends - Guides" />
+
             <Card.Body>
               <Card.Title>Guides</Card.Title>
               <Card.Text>
@@ -353,7 +353,7 @@ function Home() {
       <div className="footer-center-wrapper">
         <Footer />
       </div>
-    </section>
-  );
+    </section>);
+
 }
 export default Home;

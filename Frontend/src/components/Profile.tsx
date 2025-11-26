@@ -3,11 +3,11 @@ import Card from "react-bootstrap/Card";
 import "../styles/Home.scss";
 import LoadingOverlay from "./LoadingOverlay";
 
-// Versione DDragon per icone profilo
+
 const DDRAGON_VER = "15.22.1";
 const PROFILE_ICON_BASE = `https://ddragon.leagueoflegends.com/cdn/${DDRAGON_VER}/img/profileicon`;
 
-// Tipi minimali per i dati del profilo
+
 type Summoner = {
   id: string;
   accountId: string;
@@ -17,27 +17,27 @@ type Summoner = {
   summonerLevel: number;
 };
 
-// Tipi minimali per i dati di match v5
-type MatchInfo = any; // Manteniamo il JSON grezzo per flessibilità
+
+type MatchInfo = any;
 
 export default function Profile() {
-  // Stato form
-  const [region, setRegion] = useState<string>("euw1");
-  const [query, setQuery] = useState<string>(""); // nome evocatore
 
-  // Stato dati
+  const [region, setRegion] = useState<string>("euw1");
+  const [query, setQuery] = useState<string>("");
+
+
   const [summoner, setSummoner] = useState<Summoner | null>(null);
-  // Rimuoviamo matchIds per evitare variabili inutilizzate
+
   const [matches, setMatches] = useState<MatchInfo[]>([]);
 
-  // Stato UI
+
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
-  // Endpoint base backend
+
   const API_BASE = useMemo(() => "http://localhost:8080/api/lol", []);
 
-  // Esegue la ricerca profilo e cronologia partite
+
   const handleSearch = async (e: React.FormEvent) => {
     e.preventDefault();
     const name = query.trim();
@@ -45,21 +45,21 @@ export default function Profile() {
     setLoading(true);
     setError(null);
     setSummoner(null);
-    // noop
+
     setMatches([]);
     try {
-      // 1) Profilo
+
       const summRes = await fetch(`${API_BASE}/summoner/by-name/${region}/${encodeURIComponent(name)}`);
       if (!summRes.ok) throw new Error(`Errore profilo (${summRes.status})`);
       const summ: Summoner = await summRes.json();
       setSummoner(summ);
 
-      // 2) Ultimi match IDs (limite 10)
+
       const idsRes = await fetch(`${API_BASE}/matches/by-puuid/${region}/${encodeURIComponent(summ.puuid)}?count=10`);
       if (!idsRes.ok) throw new Error(`Errore match IDs (${idsRes.status})`);
       const ids: string[] = await idsRes.json();
 
-      // 3) Dettagli partite in parallelo (max 10)
+
       const detailPromises = ids.map((id) => fetch(`${API_BASE}/match/${region}/${id}`).then((r) => {
         if (!r.ok) throw new Error(`Errore match ${id} (${r.status})`);
         return r.json();
@@ -73,7 +73,7 @@ export default function Profile() {
     }
   };
 
-  // Trova i dati del partecipante relativo al puuid
+
   const findParticipant = (m: any, puuid?: string) => {
     const p = puuid ?? summoner?.puuid;
     const parts: any[] = m?.info?.participants ?? [];
@@ -92,7 +92,7 @@ export default function Profile() {
           <div className="col-12 col-sm-4">
             <label htmlFor="region" className="form-label text-light">Regione</label>
             <select id="region" className="form-select" value={region} onChange={(e) => setRegion(e.target.value)}>
-              {/* Mappa base delle regioni supportate */}
+              {}
               <option value="euw1">EUW1 (Europa Ovest)</option>
               <option value="eune1">EUNE1 (Europa Nord/Est)</option>
               <option value="na1">NA1 (Nord America)</option>
@@ -115,8 +115,8 @@ export default function Profile() {
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder="Es. Faker"
-              required
-            />
+              required />
+
           </div>
           <div className="col-12 col-sm-2">
             <button type="submit" className="btn btn-primary w-100">Cerca</button>
@@ -132,23 +132,23 @@ export default function Profile() {
           if (summoner) setQuery(summoner.name);
           const fake = { preventDefault: () => {} } as any;
           handleSearch(fake);
-        }}
-      />
+        }} />
 
-      {!loading && !error && summoner && (
-        <div className="home-cards">
+
+      {!loading && !error && summoner &&
+      <div className="home-cards">
           <div className="home-card-item">
             <Card className="home-card h-100">
               <Card.Header style={{ backgroundColor: "transparent" }}>Profilo</Card.Header>
               <Card.Body>
                 <div className="d-flex align-items-center gap-3">
                   <img
-                    src={`${PROFILE_ICON_BASE}/${summoner.profileIconId}.png`}
-                    alt={`Icona profilo ${summoner.name}`}
-                    width={64}
-                    height={64}
-                    loading="lazy"
-                  />
+                  src={`${PROFILE_ICON_BASE}/${summoner.profileIconId}.png`}
+                  alt={`Icona profilo ${summoner.name}`}
+                  width={64}
+                  height={64}
+                  loading="lazy" />
+
                   <div>
                     <Card.Title className="mb-1">{summoner.name}</Card.Title>
                     <Card.Text className="mb-0">Livello: {summoner.summonerLevel}</Card.Text>
@@ -163,24 +163,24 @@ export default function Profile() {
             <Card className="home-card h-100">
               <Card.Header style={{ backgroundColor: "transparent" }}>Ultime partite</Card.Header>
               <Card.Body>
-                {matches.length === 0 && (
-                  <div className="text-secondary">Nessuna partita recente trovata.</div>
-                )}
+                {matches.length === 0 &&
+              <div className="text-secondary">Nessuna partita recente trovata.</div>
+              }
                 {matches.map((m, idx) => {
-                  const me = findParticipant(m, summoner.puuid);
-                  const queueId = m?.info?.queueId;
-                  const gameMode = typeof queueId === "number" ? queueId : "";
-                  const champion = me?.championName || "";
-                  const k = me?.kills ?? 0;
-                  const d = me?.deaths ?? 0;
-                  const a = me?.assists ?? 0;
-                  const win = me?.win ? "Vittoria" : "Sconfitta";
-                  const kda = d > 0 ? ((k + a) / d).toFixed(2) : "Perfetto";
-                  const start = m?.info?.gameStartTimestamp ? new Date(m.info.gameStartTimestamp) : null;
-                  const durationSec = m?.info?.gameDuration ?? 0;
-                  const durationMin = Math.round(durationSec / 60);
-                  return (
-                    <div key={m?.metadata?.matchId ?? idx} className="mb-3 p-2 rounded" style={{ background: "#0f0f1a" }}>
+                const me = findParticipant(m, summoner.puuid);
+                const queueId = m?.info?.queueId;
+                const gameMode = typeof queueId === "number" ? queueId : "";
+                const champion = me?.championName || "";
+                const k = me?.kills ?? 0;
+                const d = me?.deaths ?? 0;
+                const a = me?.assists ?? 0;
+                const win = me?.win ? "Vittoria" : "Sconfitta";
+                const kda = d > 0 ? ((k + a) / d).toFixed(2) : "Perfetto";
+                const start = m?.info?.gameStartTimestamp ? new Date(m.info.gameStartTimestamp) : null;
+                const durationSec = m?.info?.gameDuration ?? 0;
+                const durationMin = Math.round(durationSec / 60);
+                return (
+                  <div key={m?.metadata?.matchId ?? idx} className="mb-3 p-2 rounded" style={{ background: "#0f0f1a" }}>
                       <div className="d-flex justify-content-between align-items-center">
                         <strong>{champion}</strong>
                         <span className={me?.win ? "text-success" : "text-danger"}>{win}</span>
@@ -191,15 +191,14 @@ export default function Profile() {
                         {start && <span>Data: {start.toLocaleString()}</span>}
                         <span>Durata: {durationMin} min</span>
                       </div>
-                    </div>
-                  );
-                })}
+                    </div>);
+
+              })}
               </Card.Body>
             </Card>
           </div>
         </div>
-      )}
-    </section>
-  );
-}
+      }
+    </section>);
 
+}
